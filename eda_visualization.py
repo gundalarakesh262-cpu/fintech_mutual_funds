@@ -33,7 +33,7 @@ try:
     print(f"  - Investors: {len(investor_df)}\n")
 
 except Exception as e:
-    print(f"❌ Error: {e}")
+    print(f" Error: {e}")
     exit()
 
 print("📊 Creating Visualization 1: NAV Trends...")
@@ -57,11 +57,11 @@ try:
     fig.update_layout(title='NAV Trend Analysis: All Schemes (2022-2026)', xaxis_title='Date',
                      yaxis_title='NAV (₹)', hovermode='x unified', height=600, showlegend=False)
     fig.write_html('charts/01_nav_trends.html')
-    print("✓ Created: 01_nav_trends.html")
+    print(" Created: 01_nav_trends.html")
 except Exception as e:
-    print(f"⚠️ Error: {e}")
+    print(f" Error: {e}")
 
-print("📊 Creating Visualization 2: AUM Growth...")
+print(" Creating Visualization 2: AUM Growth...")
 try:
     aum_merged = aum_df.merge(fund_df[['fund_id', 'fund_house']], on='fund_id')
     aum_merged = aum_merged.merge(date_df[['date_id', 'date']], on='date_id')
@@ -78,9 +78,9 @@ try:
     fig.write_html('charts/02_aum_growth.html')
     print("✓ Created: 02_aum_growth.html")
 except Exception as e:
-    print(f"⚠️ Error: {e}")
+    print(f" Error: {e}")
 
-print("📊 Creating Visualization 3: SIP Inflow...")
+print(" Creating Visualization 3: SIP Inflow...")
 try:
     sip_df = txn_df[txn_df['transaction_type'] == 'SIP'].copy()
     sip_df = sip_df.merge(date_df[['date_id', 'date']], on='date_id')
@@ -104,9 +104,9 @@ try:
     fig.write_html('charts/03_sip_inflow.html')
     print("✓ Created: 03_sip_inflow.html")
 except Exception as e:
-    print(f"⚠️ Error: {e}")
+    print(f"Error: {e}")
 
-print("📊 Creating Visualization 4: Category Heatmap...")
+print(" Creating Visualization 4: Category Heatmap...")
 try:
     inflow_df = txn_df.merge(fund_df[['fund_id', 'category']], on='fund_id')
     inflow_df = inflow_df.merge(date_df[['date_id', 'date']], on='date_id')
@@ -128,9 +128,9 @@ try:
     plt.close()
     print("✓ Created: 04_category_heatmap.png")
 except Exception as e:
-    print(f"⚠️ Error: {e}")
+    print(f" Error: {e}")
 
-print("📊 Creating Visualization 5: Demographics...")
+print(" Creating Visualization 5: Demographics...")
 try:
     investor_txn = txn_df.merge(investor_df[['investor_id', 'investor_state']], on='investor_id')
     investor_txn = investor_txn[investor_txn['transaction_type'] == 'SIP']
@@ -145,9 +145,9 @@ try:
     fig.write_html('charts/05_demographics.html')
     print("✓ Created: 05_demographics.html")
 except Exception as e:
-    print(f"⚠️ Error: {e}")
+    print(f" Error: {e}")
 
-print("📊 Creating Visualization 6: Geographic Distribution...")
+print(" Creating Visualization 6: Geographic Distribution...")
 try:
     geo_txn = txn_df.merge(investor_df[['investor_id', 'investor_state']], on='investor_id')
     geo_txn = geo_txn[geo_txn['transaction_type'] == 'SIP']
@@ -159,9 +159,9 @@ try:
     fig.write_html('charts/06_geographic.html')
     print("✓ Created: 06_geographic.html")
 except Exception as e:
-    print(f"⚠️ Error: {e}")
+    print(f" Error: {e}")
 
-print("📊 Creating Visualization 7: Folio Growth...")
+print(" Creating Visualization 7: Folio Growth...")
 try:
     folio_df = txn_df.merge(date_df[['date_id', 'date']], on='date_id')
     folio_df['date'] = pd.to_datetime(folio_df['date'])
@@ -180,9 +180,9 @@ try:
     fig.write_html('charts/07_folio_growth.html')
     print("✓ Created: 07_folio_growth.html")
 except Exception as e:
-    print(f"⚠️ Error: {e}")
+    print(f" Error: {e}")
 
-print("📊 Creating Visualization 8: Correlation Matrix...")
+print(" Creating Visualization 8: Correlation Matrix...")
 try:
     nav_returns = nav_merged.pivot_table(index='date', columns='fund_name', values='nav_value')
     returns = nav_returns.pct_change().dropna()
@@ -198,7 +198,7 @@ try:
     plt.close()
     print("✓ Created: 08_correlation.png")
 except Exception as e:
-    print(f"⚠️ Error: {e}")
+    print(f" Error: {e}")
 
 print("📊 Creating Visualization 9: Sector Allocation...")
 try:
@@ -214,9 +214,9 @@ except Exception as e:
     print(f"⚠️ Error: {e}")
 
 print("\n" + "="*80)
-print("✅ EDA ANALYSIS COMPLETE!")
+print("EDA ANALYSIS COMPLETE!")
 print("="*80)
-print("\n📊 Charts Created:")
+print("\n Charts Created:")
 print("  1. NAV Trends (2022-2026)")
 print("  2. AUM Growth by Fund House")
 print("  3. SIP Inflow Time-Series")
@@ -226,5 +226,5 @@ print("  6. Geographic Distribution")
 print("  7. Folio Count Growth")
 print("  8. Correlation Matrix")
 print("  9. Sector Allocation")
-print("\n📁 Output Location: charts/ folder")
+print("\n Output Location: charts/ folder")
 print("="*80 + "\n")

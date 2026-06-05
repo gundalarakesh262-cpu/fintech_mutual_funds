@@ -1,7 +1,4 @@
-"""
-Day 2: Database Schema & Data Loading Script
-Creates SQLite star schema and loads cleaned data
-"""
+
 
 import pandas as pd
 import sqlite3

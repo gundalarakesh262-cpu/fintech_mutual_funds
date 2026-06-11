@@ -1,8 +1,4 @@
--- Day 2: 10 Analytical SQL Queries for Mutual Fund Analytics
--- ============================================================
 
--- QUERY 1: Top 5 Funds by AUM
--- Purpose: Identify largest funds by Assets Under Management
 SELECT 
     df.fund_name,
     df.fund_house,
@@ -16,10 +12,7 @@ GROUP BY fa.fund_id, df.fund_name, df.fund_house, df.category
 ORDER BY avg_aum DESC
 LIMIT 5;
 
--- ============================================================
 
--- QUERY 2: Average NAV per Month for Top Fund
--- Purpose: Track NAV trends monthly for the largest fund
 SELECT 
     strftime('%Y-%m', dd.date) as month,
     ROUND(AVG(fn.nav_value), 2) as avg_nav,
@@ -33,7 +26,7 @@ WHERE df.fund_name LIKE '%Top 100%'
 GROUP BY strftime('%Y-%m', dd.date)
 ORDER BY month DESC;
 
--- ============================================================
+
 
 -- QUERY 3: SIP Year-over-Year Growth
 -- Purpose: Compare SIP transaction volumes YoY
@@ -65,9 +58,7 @@ WHERE di.investor_state IS NOT NULL
 GROUP BY di.investor_state
 ORDER BY total_amount DESC;
 
--- ============================================================
 
--- QUERY 5: Funds with Expense Ratio < 1%
 -- Purpose: Identify low-cost fund options
 SELECT 
     df.fund_name,
@@ -83,9 +74,7 @@ GROUP BY fp.fund_id, df.fund_name, df.fund_house, df.category
 HAVING AVG(fp.expense_ratio) < 1.0
 ORDER BY avg_expense_ratio ASC;
 
--- ============================================================
 
--- QUERY 6: Redemption vs Lumpsum Ratio by Fund
 -- Purpose: Analyze investor behavior (buying vs selling)
 SELECT 
     df.fund_name,
@@ -105,9 +94,6 @@ GROUP BY ft.fund_id, df.fund_name, df.fund_house
 HAVING lumpsum_amount > 0 AND redemption_amount > 0
 ORDER BY inflow_outflow_ratio DESC;
 
--- ============================================================
-
--- QUERY 7: Best Performing Funds by 1-Year Return
 -- Purpose: Identify top performers in the last year
 SELECT 
     df.fund_name,
@@ -124,9 +110,7 @@ GROUP BY fp.fund_id, df.fund_name, df.fund_house, df.category
 ORDER BY net_return_after_expense DESC
 LIMIT 10;
 
--- ============================================================
 
--- QUERY 8: Risk Grade Distribution with Average Returns
 -- Purpose: Analyze risk vs return relationship
 SELECT 
     df.risk_grade,
@@ -141,9 +125,6 @@ LEFT JOIN fact_aum fa ON fp.fund_id = fa.fund_id
 GROUP BY df.risk_grade
 ORDER BY df.risk_grade;
 
--- ============================================================
-
--- QUERY 9: Investor KYC Status Distribution
 -- Purpose: Monitor investor verification status
 SELECT 
     di.kyc_status,
@@ -157,9 +138,6 @@ LEFT JOIN fact_transactions ft ON di.investor_id = ft.investor_id
 GROUP BY di.kyc_status
 ORDER BY investor_count DESC;
 
--- ============================================================
-
--- QUERY 10: Fund Category Performance Comparison
 -- Purpose: Compare performance across different fund categories
 SELECT 
     df.category,
@@ -178,9 +156,6 @@ WHERE fp.return_1y IS NOT NULL
 GROUP BY df.category
 ORDER BY avg_1y_return DESC;
 
--- ============================================================
--- ADDITIONAL USEFUL QUERIES
--- ============================================================
 
 -- Query A: Latest NAV for All Funds
 SELECT 

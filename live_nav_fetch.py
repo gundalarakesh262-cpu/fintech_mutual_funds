@@ -1,8 +1,3 @@
-"""
-Day 1: Live NAV Fetch Script
-Fetches live NAV from mfapi.in for HDFC Top 100 and 5 key schemes
-Parses JSON and saves as CSV
-"""
 
 import requests
 import pandas as pd
@@ -10,10 +5,10 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-# API endpoint
+
 API_BASE = "https://api.mfapi.in/mf"
 
-# Scheme codes to fetch
+
 SCHEMES = {
     "HDFC Top 100 Direct": "125497",
     "SBI Bluechip": "119551",
@@ -43,17 +38,16 @@ def fetch_nav(scheme_code, scheme_name):
         
         # Check if response has data
         if "meta" not in data or "data" not in data:
-            print(f"   ❌ Invalid response format\n")
+            print(f" Invalid response format\n")
             return None
-        
-        # Extract meta information
+
         meta = data.get("meta", {})
         nav_data = data.get("data", [])
         
-        print(f"   ✓ Success!")
-        print(f"   - Fund House: {meta.get('fundHouse', 'N/A')}")
-        print(f"   - Scheme Name: {meta.get('schemeName', 'N/A')}")
-        print(f"   - Total NAV Records: {len(nav_data)}")
+        print(f"    Success!")
+        print(f" Fund House: {meta.get('fundHouse', 'N/A')}")
+        print(f" Scheme Name: {meta.get('schemeName', 'N/A')}")
+        print(f" Total NAV Records: {len(nav_data)}")
         
         if nav_data:
             latest_nav = nav_data[0]
@@ -69,27 +63,26 @@ def fetch_nav(scheme_code, scheme_name):
         }
     
     except requests.exceptions.RequestException as e:
-        print(f"   ❌ Error: {str(e)}\n")
+        print(f"    Error: {str(e)}\n")
         return None
 
 def save_nav_to_csv(scheme_code, scheme_name, nav_data):
     """Convert NAV data to DataFrame and save as CSV"""
     try:
-        # Create DataFrame from NAV data
+
         df = pd.DataFrame(nav_data)
         
-        # Save to CSV
         filename = f"data/raw/nav_live_{scheme_code}_{scheme_name.replace(' ', '_').lower()}.csv"
         df.to_csv(filename, index=False)
         
-        print(f"   💾 Saved: {filename}")
+        print(f"     Saved: {filename}")
         print(f"   - Shape: {df.shape}")
         print(f"   - Columns: {list(df.columns)}\n")
         
         return df
     
     except Exception as e:
-        print(f"   ❌ Error saving CSV: {str(e)}\n")
+        print(f"    Error saving CSV: {str(e)}\n")
         return None
 
 def main():

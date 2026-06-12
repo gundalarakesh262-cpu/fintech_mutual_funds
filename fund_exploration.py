@@ -1,7 +1,6 @@
-"""
+
 Day 1: Fund Master Exploration & AMFI Validation Script
-Explores fund_master, validates AMFI codes, generates quality summary
-"""
+
 
 import pandas as pd
 import numpy as np
@@ -15,18 +14,18 @@ def load_data():
     
     try:
         fund_master = pd.read_csv("data/raw/fund_master.csv")
-        print("✓ Loaded fund_master.csv")
+        print(" Loaded fund_master.csv")
         print(f"  Shape: {fund_master.shape}\n")
     except FileNotFoundError:
-        print("❌ fund_master.csv not found")
+        print(" fund_master.csv not found")
         return None, None
     
     try:
         nav_history = pd.read_csv("data/raw/nav_history.csv")
-        print("✓ Loaded nav_history.csv")
+        print(" Loaded nav_history.csv")
         print(f"  Shape: {nav_history.shape}\n")
     except FileNotFoundError:
-        print("⚠️  nav_history.csv not found (will skip validation)")
+        print("  nav_history.csv not found (will skip validation)")
         nav_history = None
     
     return fund_master, nav_history
@@ -38,39 +37,37 @@ def explore_fund_master(df):
     print("="*80 + "\n")
     
     # 1. Schema
-    print("📋 Schema:")
+    print(" Schema:")
     print(df.dtypes)
     print()
     
-    # 2. Unique Fund Houses
+ 
     if 'Fund House' in df.columns or 'fundHouse' in df.columns:
         col_name = 'Fund House' if 'Fund House' in df.columns else 'fundHouse'
         fund_houses = df[col_name].unique()
-        print(f"\n🏢 Unique Fund Houses: {len(fund_houses)}")
+        print(f"\n Unique Fund Houses: {len(fund_houses)}")
         for i, house in enumerate(fund_houses[:20], 1):
             print(f"   {i:2d}. {house}")
         if len(fund_houses) > 20:
             print(f"   ... and {len(fund_houses) - 20} more")
-    
-    # 3. Unique Categories
+
     if 'Category' in df.columns or 'category' in df.columns:
         col_name = 'Category' if 'Category' in df.columns else 'category'
         categories = df[col_name].unique()
-        print(f"\n📂 Unique Categories: {len(categories)}")
+        print(f"\n Unique Categories: {len(categories)}")
         for i, cat in enumerate(categories, 1):
             print(f"   {i:2d}. {cat}")
     
-    # 4. Unique Sub-Categories
+  
     if 'Sub Category' in df.columns or 'subcategory' in df.columns:
         col_name = 'Sub Category' if 'Sub Category' in df.columns else 'subcategory'
         subcats = df[col_name].unique()
-        print(f"\n📊 Unique Sub-Categories: {len(subcats)}")
+        print(f"\n Unique Sub-Categories: {len(subcats)}")
         for i, subcat in enumerate(subcats[:15], 1):
             print(f"   {i:2d}. {subcat}")
         if len(subcats) > 15:
             print(f"   ... and {len(subcats) - 15} more")
     
-    # 5. Risk Grades
     if 'Risk Grade' in df.columns or 'riskGrade' in df.columns:
         col_name = 'Risk Grade' if 'Risk Grade' in df.columns else 'riskGrade'
         risk_grades = df[col_name].unique()
@@ -78,9 +75,8 @@ def explore_fund_master(df):
         for grade in sorted(risk_grades):
             count = (df[col_name] == grade).sum()
             print(f"   {grade}: {count} schemes")
-    
-    # 6. Sample schemes
-    print(f"\n👀 Sample Schemes:")
+   
+    print(f"\n Sample Schemes:")
     print(df.head(10))
 
 def understand_amfi_structure(df):
@@ -89,7 +85,7 @@ def understand_amfi_structure(df):
     print("AMFI SCHEME CODE STRUCTURE")
     print("="*80 + "\n")
     
-    # Find scheme code column
+   
     code_col = None
     for col in df.columns:
         if 'code' in col.lower() or 'amfi' in col.lower():
@@ -97,7 +93,7 @@ def understand_amfi_structure(df):
             break
     
     if code_col is None:
-        print("⚠️  Could not find AMFI scheme code column")
+        print("  Could not find AMFI scheme code column")
         return
     
     print(f"Scheme Code Column: '{code_col}'")
@@ -105,12 +101,10 @@ def understand_amfi_structure(df):
     print(f"Unique Codes: {df[code_col].nunique()}")
     print(f"Code Data Type: {df[code_col].dtype}")
     
-    # Sample codes
     print(f"\nSample AMFI Codes:")
     for code in df[code_col].head(10):
         print(f"   {code}")
     
-    # Code statistics
     print(f"\nCode Statistics:")
     print(f"   Min Code: {df[code_col].min()}")
     print(f"   Max Code: {df[code_col].max()}")
@@ -123,8 +117,7 @@ def validate_amfi_codes(fund_master, nav_history):
     print("\n" + "="*80)
     print("AMFI CODE VALIDATION")
     print("="*80 + "\n")
-    
-    # Find scheme code columns
+
     fm_code_col = None
     nh_code_col = None
     
@@ -139,7 +132,7 @@ def validate_amfi_codes(fund_master, nav_history):
             break
     
     if fm_code_col is None or nh_code_col is None:
-        print("⚠️  Could not find scheme code columns for validation")
+        print("  Could not find scheme code columns for validation")
         return {}
     
     fm_codes = set(fund_master[fm_code_col].dropna().unique())
@@ -152,9 +145,9 @@ def validate_amfi_codes(fund_master, nav_history):
     missing_in_nav = fm_codes - nh_codes
     extra_in_nav = nh_codes - fm_codes
     
-    print(f"\n✓ Codes in both: {len(fm_codes & nh_codes)}")
-    print(f"❌ Codes in fund_master but NOT in nav_history: {len(missing_in_nav)}")
-    print(f"⚠️  Codes in nav_history but NOT in fund_master: {len(extra_in_nav)}")
+    print(f"\n Codes in both: {len(fm_codes & nh_codes)}")
+    print(f" Codes in fund_master but NOT in nav_history: {len(missing_in_nav)}")
+    print(f"  Codes in nav_history but NOT in fund_master: {len(extra_in_nav)}")
     
     if missing_in_nav:
         print(f"\n   Missing Codes (first 10):")
@@ -202,7 +195,7 @@ def generate_quality_summary(fund_master, nav_history, validation):
     summary["validation"] = validation
     
     # Print summary
-    print("📊 Fund Master:")
+    print(" Fund Master:")
     print(f"   Rows: {summary['datasets']['fund_master']['rows']:,}")
     print(f"   Columns: {summary['datasets']['fund_master']['columns']}")
     print(f"   Missing Values: {summary['datasets']['fund_master']['missing_values']}")
@@ -210,20 +203,20 @@ def generate_quality_summary(fund_master, nav_history, validation):
     print(f"   Memory: {summary['datasets']['fund_master']['memory_mb']:.2f} MB")
     
     if "nav_history" in summary["datasets"]:
-        print("\n📊 NAV History:")
+        print("\n NAV History:")
         print(f"   Rows: {summary['datasets']['nav_history']['rows']:,}")
         print(f"   Columns: {summary['datasets']['nav_history']['columns']}")
         print(f"   Missing Values: {summary['datasets']['nav_history']['missing_values']}")
         print(f"   Duplicate Rows: {summary['datasets']['nav_history']['duplicate_rows']}")
         print(f"   Memory: {summary['datasets']['nav_history']['memory_mb']:.2f} MB")
     
-    print("\n✅ Validation Summary:")
+    print("\n Validation Summary:")
     if validation:
         print(f"   Matched Scheme Codes: {validation['matched']}")
         print(f"   Missing in NAV History: {validation['missing']}")
         print(f"   Extra in NAV History: {validation['extra']}")
     
-    # Save summary to file
+   
     summary_file = "data/processed/day1_quality_summary.txt"
     Path("data/processed").mkdir(parents=True, exist_ok=True)
     
@@ -232,7 +225,7 @@ def generate_quality_summary(fund_master, nav_history, validation):
         f.write("="*80 + "\n\n")
         f.write(str(summary))
     
-    print(f"\n💾 Summary saved to: {summary_file}")
+    print(f"\n Summary saved to: {summary_file}")
     
     return summary
 
@@ -241,21 +234,21 @@ def main():
     fund_master, nav_history = load_data()
     
     if fund_master is None:
-        print("❌ Cannot proceed without fund_master.csv")
+        print(" Cannot proceed without fund_master.csv")
         return
     
-    # 1. Explore fund master
+   
     explore_fund_master(fund_master)
     
-    # 2. Understand AMFI structure
+
     understand_amfi_structure(fund_master)
     
-    # 3. Validate AMFI codes
+   
     validation = {}
     if nav_history is not None:
         validation = validate_amfi_codes(fund_master, nav_history)
     
-    # 4. Generate quality summary
+
     quality_summary = generate_quality_summary(fund_master, nav_history, validation)
     
     print("\n" + "="*80)

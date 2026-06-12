@@ -35,7 +35,7 @@ def clean_nav_history():
             except:
                 print(f"     Could not convert '{col}'")
         
-        # 2. Sort by amfi_code + date
+       
         print("\n  Sorting by amfi_code + date...")
         amfi_col = [col for col in df.columns if 'amfi' in col.lower() or 'code' in col.lower()]
         if amfi_col and date_cols:
@@ -74,7 +74,7 @@ def clean_nav_history():
         return df
     
     except FileNotFoundError:
-        print("❌ nav_history.csv not found\n")
+        print(" nav_history.csv not found\n")
         return None
 
 def clean_investor_transactions():
@@ -87,7 +87,7 @@ def clean_investor_transactions():
         df = pd.read_csv(f"{DATA_RAW}/investor_transactions.csv")
         print(f"📥 Loaded: {df.shape[0]} rows, {df.shape[1]} columns")
         
-        # 1. Standardise transaction_type values
+        
         print("\n1️⃣  Standardising transaction_type...")
         txn_col = [col for col in df.columns if 'type' in col.lower() or 'transaction' in col.lower()]
         if txn_col:
@@ -105,7 +105,7 @@ def clean_investor_transactions():
             print(f"   Cleaned values: {df[col_name].unique()}")
             invalid = ~df[col_name].isin(valid_types)
             if invalid.sum() > 0:
-                print(f"   ⚠️  {invalid.sum()} invalid values (removing)")
+                print(f"     {invalid.sum()} invalid values (removing)")
                 df = df[~invalid]
             print(f"   ✓ Standardised")
         

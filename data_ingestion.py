@@ -1,14 +1,13 @@
-"""
-Day 1: Data Ingestion Script
+" Data Ingestion Script
 Loads 10 CSV datasets, explores structure, identifies anomalies
-"""
+"
 
 import pandas as pd
 import numpy as np
 import os
 from pathlib import Path
 
-# Define data paths
+
 DATA_RAW = "data/raw"
 DATA_PROCESSED = "data/processed"
 
@@ -27,44 +26,40 @@ def load_and_explore_dataset(file_path, dataset_name):
     try:
         df = pd.read_csv(file_path)
         
-        # 1. Shape
-        print(f"\n📊 Shape: {df.shape}")
+    
+        print(f"\n  Shape: {df.shape}")
         print(f"   Rows: {df.shape[0]}, Columns: {df.shape[1]}")
         
-        # 2. Data Types
-        print(f"\n📋 Data Types:")
+       
+        print(f"\n Data Types:")
         print(df.dtypes)
         
-        # 3. First 5 rows
-        print(f"\n👀 First 5 Rows:")
+
+        print(f"\n First 5 Rows:")
         print(df.head())
-        
-        # 4. Anomalies Detection
-        print(f"\n⚠️  Anomalies:")
+    
+        print(f"\n  Anomalies:")
         anomalies = []
         
-        # Missing values
         missing = df.isnull().sum()
         if missing.sum() > 0:
             anomalies.append(f"   Missing Values: {missing[missing > 0].to_dict()}")
         else:
-            anomalies.append("   ✓ No missing values")
+            anomalies.append("    No missing values")
         
-        # Duplicate rows
         duplicates = df.duplicated().sum()
         if duplicates > 0:
             anomalies.append(f"   Duplicate Rows: {duplicates}")
         else:
-            anomalies.append("   ✓ No duplicate rows")
-        
-        # Numeric columns - check for negative values where unexpected
+            anomalies.append("    No duplicate rows")
+       
         numeric_cols = df.select_dtypes(include=[np.number]).columns
         for col in numeric_cols:
             if (df[col] < 0).any():
                 neg_count = (df[col] < 0).sum()
                 anomalies.append(f"   Negative Values in '{col}': {neg_count}")
         
-        # Empty strings in object columns
+
         obj_cols = df.select_dtypes(include=['object']).columns
         for col in obj_cols:
             empty_count = (df[col] == '').sum()
@@ -77,10 +72,10 @@ def load_and_explore_dataset(file_path, dataset_name):
         return df, len(anomalies) > 1
     
     except FileNotFoundError:
-        print(f"❌ File not found: {file_path}")
+        print(f"  File not found: {file_path}")
         return None, True
     except Exception as e:
-        print(f"❌ Error loading file: {str(e)}")
+        print(f" Error loading file: {str(e)}")
         return None, True
 
 def main():
@@ -109,14 +104,14 @@ def main():
     loaded_datasets = {}
     anomaly_summary = {}
     
-    # Load and explore each dataset
+    
     for name, path in datasets.items():
         df, has_anomalies = load_and_explore_dataset(path, name)
         if df is not None:
             loaded_datasets[name] = df
             anomaly_summary[name] = has_anomalies
     
-    # Summary Report
+
     print(f"\n\n{'='*80}")
     print("SUMMARY REPORT")
     print(f"{'='*80}")
@@ -125,7 +120,7 @@ def main():
     
     print(f"\nDatasets with anomalies: {sum(anomaly_summary.values())}")
     for name, has_anomalies in anomaly_summary.items():
-        status = "⚠️ " if has_anomalies else "✓"
+        status = " " if has_anomalies else "✓"
         print(f"   {status} {name}")
     
     print(f"\n{'='*80}")
